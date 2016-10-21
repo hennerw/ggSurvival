@@ -10,5 +10,6 @@ Description: A collection of functions to make generating survival plots within 
 License: GPL-3
 LazyData: TRUE
 Imports:
+ dplyr,
  ggplot2,
  survival
