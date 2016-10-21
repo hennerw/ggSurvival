@@ -6,7 +6,7 @@ October 21, 2016
 
 `ggSurvival` is an R package designed to work within the ggplot framework. It provides both quick easy plotting functions for Kaplan-Meier survival plots as well as a survival dataframe generating function for users fluent in ggplot who wish to customize their plots.
 
-If you are comfortbale with ggplot already then you may wish to jump to [Fluent ggplot Users](#fluent).
+If you are comfortable with ggplot already then you may wish to jump to [Fluent ggplot Users](#fluent).
 
 # Quick Start
 
@@ -41,9 +41,9 @@ If any of the packages other than ggSurvival are not already installed you can i
 
 ## Data Set
 
-As an example, I will be using the `cancer` data set from the `survival` package. This dataset is the overall survival of 228 lung cancer patients. See `?cancer` for more details. 
+As an example, I will be using the `cancer` data set from the `survival` package. This data set is the overall survival of 228 lung cancer patients. See `?cancer` for more details. 
 
-Please do not take anything I do with this set to be suggestions for an appropriate analysis on these data. I am simply using this dataset as an example.
+Please do not take anything I do with this set to be suggestions for an appropriate analysis on these data. I am simply using this data set as an example.
 
 
 ```r
@@ -66,7 +66,7 @@ head(Data)
 ## 6          12 1022      0 Male
 ```
 
-Note the change I made to `status`, this dataset codes event status as `1 = censored` and `2 = dead`, R's survival function assumes that `0 = censored` and `1 = event`, so in this case I can just subtract 1 to get the correct values. Be very careful, coding for events is not uniform and people will sometimes use `0 = death` and `1 = censored` which, without correction, will make your analysis meaningless.
+Note the change I made to `status`, this data set codes event status as `1 = censored` and `2 = dead`, R's survival function assumes that `0 = censored` and `1 = event`, so in this case I can just subtract 1 to get the correct values. Be very careful, coding for events is not uniform and people will sometimes use `0 = death` and `1 = censored` which, without correction, will make your analysis meaningless.
 
 Next up, we combine the `time` and `status` vectors into a R survival object.
 
@@ -97,7 +97,7 @@ ggPrettySurv(srv = Data$Surv,Factor = Data$sex, Main = 'With More Colours!')
 
 ## ggplot Themes
 
-For people who are comfortable with ggplot and want to customize their plot, useing `ggSimpleSurv()` will produce a minimal ggplot that can be moddified with standard ggplot functions such as theme. (Though not facet wrapping, see the power user section)
+For people who are comfortable with ggplot and want to customize their plot, using `ggSimpleSurv()` will produce a minimal ggplot that can be modified with standard ggplot functions such as theme. (Though not facet wrapping, see the power user section)
 
 
 ```r
@@ -122,9 +122,9 @@ ggSimpleSurv(srv = Data$Surv,Factor = Data$sex) +
 
 # <a name='fluent'></a>Fluent ggplot Users
 
-The fucntion `survForm()` offers a convenient and flexible method of extracting the step function from a `Surv` object.
+The function `survForm()` offers a convenient and flexible method of extracting the step function from a `Surv` object.
 
-Using the dataset from quick start above:
+Using the data set from quick start above:
 
 
 ```r
@@ -143,7 +143,7 @@ head(Step.Data)
 ## 6  Male   26    131       1        0 0.9420290 0.9038355 0.9818365
 ```
 
-This returns a dataframe with a row for each occurrance 
+This returns a dataframe with a row for each occurrence 
 
 which can then be fed into ggplot:
 
@@ -151,11 +151,11 @@ which can then be fed into ggplot:
 
 ## faccetting
 
-Facceting is one of the most powerful and useful features of ggplot, it is a little tricky to use with survival data because of the processing that needs to be done outside. The `survForm` function works splits along one factor, but what if we have two?
+Faceting is one of the most powerful and useful features of ggplot, it is a little tricky to use with survival data because of the processing that needs to be done outside. The `survForm` function works splits along one factor, but what if we have two?
 
-For example, what if we wanted to plot each instatution seperatly? 
+For example, what if we wanted to plot each institution separately? 
 
-Using dplyr we can generate our step function table split on multiple factors. In this case, Instatution and Sex.
+Using dplyr we can generate our step function table split on multiple factors. In this case, Institution and Sex.
 
 
 ```r
