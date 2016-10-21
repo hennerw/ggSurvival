@@ -1,0 +1,14 @@
+Package: ggSurvival
+Type: Package
+Title: Tools for generating survival plots in ggplot2
+Version: 0.1
+Date: 2016-09-21
+Authors@R: person("Randall", "henner", email = "hennerw@gmail.com", role = c("aut", "cre"))
+Description: A collection of functions to make generating survival plots within the ggplot ecosystem easy.
+ These functions are built modularly with lower level function avalible for users with very specific needs
+ and high level functions that should meet the needs of the majority of users.
+License: GPL-3
+LazyData: TRUE
+Imports:
+ggplot2,
+survival
