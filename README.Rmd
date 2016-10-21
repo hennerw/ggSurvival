@@ -9,7 +9,9 @@ output:
 
 # Introduction
 
-`ggSurvival` is an R package designed to work with 
+`ggSurvival` is an R package designed to work within the ggplot framework. It provides both quick easy plotting functions for Kaplan-Meier survival plots as well as a survival dataframe generating function for users fluent in ggplot who wish to customize their plots.
+
+If you are comfortbale with ggplot already then you may wish to jump to [Fluent ggplot Users](#fluent).
 
 # Quick Start
 
@@ -17,7 +19,9 @@ This section is for people with a introductory understanding of R who just want 
 
 ## Install ggSurvival
 
-```{r,echo=FALSE,eval=FALSE}
+`ggSurvival` can be installed directly from github:
+
+```{r,eval=FALSE}
 library(devtools)
 install_github("hennerw/ggSurvival")
 ```
@@ -27,9 +31,12 @@ install_github("hennerw/ggSurvival")
 ```{r,warning=FALSE,message=FALSE}
 library(ggSurvival)
 
+# Required packages for ggSurvival
 library(ggplot2)
 library(survival)
 library(dplyr)
+
+# Additional packages used in this document.
 library(tidyr)
 ```
 
@@ -41,7 +48,7 @@ As an example, I will be using the `cancer` data set from the `survival` package
 
 Please do not take anything I do with this set to be suggestions for an appropriate analysis on these data. I am simply using this dataset as an example.
 
-```{r,echo=FALSE}
+```{r}
 Data <- cancer %>%
   mutate(sex = factor(sex,levels=c(1,2),labels=c('Male','Female')),
          status = status -1 
@@ -71,4 +78,70 @@ Or making a plot spit up by patient Gender:
 
 ```{r}
 ggPrettySurv(srv = Data$Surv,Factor = Data$sex, Main = 'With More Colours!')
+```
+
+## ggplot Themes
+
+For people who are comfortable with ggplot and want to customize their plot, useing `ggSimpleSurv()` will produce a minimal ggplot that can be moddified with standard ggplot functions such as theme. (Though not facet wrapping, see the power user section)
+
+```{r}
+ggSimpleSurv(srv = Data$Surv,Factor = Data$sex)
+```
+
+Compared to: 
+
+```{r}
+ggSimpleSurv(srv = Data$Surv,Factor = Data$sex) +
+  ggtitle("Title goes here") +
+  xlab('Days') +
+  scale_y_continuous(limits=c(0,1.04),expand=c(0,0)) +
+  scale_x_continuous(limits = c(0,max(Data$time) * 1.05),expand=c(0,0))+
+  scale_color_manual(values = c('purple','salmon'),name='Sex')
+```
+
+# <a name='fluent'></a>Fluent ggplot Users
+
+The fucntion `survForm()` offers a convenient and flexible method of extracting the step function from a `Surv` object.
+
+Using the dataset from quick start above:
+
+```{r}
+Step.Data <- survForm(Data$Surv,Data$sex)
+
+head(Step.Data)
+```
+
+This returns a dataframe with a row for each occurrance 
+
+which can then be fed into ggplot:
+
+```{r,echo=FALSE}
+ggplot(Step.Data,aes(x=time,y=surv,color=Group))+
+  geom_step()+
+  geom_point(data=filter(Step.Data,n.censor >0),pch='|',size=4)
+```
+
+## faccetting
+
+Facceting is one of the most powerful and useful features of ggplot, it is a little tricky to use with survival data because of the processing that needs to be done outside. The `survForm` function works splits along one factor, but what if we have two?
+
+For example, what if we wanted to plot each instatution seperatly? 
+
+Using dplyr we can generate our step function table split on multiple factors. In this case, Instatution and Sex.
+
+```{r}
+Step.Data <- Data %>%
+  group_by(Instatution,sex) %>%
+  do(survForm(.$Surv))
+
+head(Step.Data)
+```
+
+Now we can plot it using ggplot like normal:
+
+```{r}
+ggplot(Step.Data,aes(x=time,y=surv,color=sex))+
+  geom_step()+
+  geom_point(data=filter(Step.Data,n.censor >0),pch='|',size=4)+
+  facet_wrap(~Instatution)
 ```
